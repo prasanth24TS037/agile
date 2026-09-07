@@ -1,0 +1,507 @@
+// ================================
+// HOTEL BOOKING SYSTEM - JAVASCRIPT
+// ================================
+
+let selectedHotelName = "";
+let selectedHotelPrice = 0;
+
+// -------------------------------
+// SET MINIMUM DATE TO TODAY
+// -------------------------------
+
+const today = new Date().toISOString().split("T")[0];
+
+const dateInputs = [
+  "checkin",
+  "checkout",
+  "modalCheckin",
+  "modalCheckout"
+];
+
+dateInputs.forEach(id => {
+  const element = document.getElementById(id);
+
+  if (element) {
+    element.min = today;
+  }
+});
+
+// -------------------------------
+// OPEN BOOKING MODAL
+// -------------------------------
+
+function openBooking(hotel, price) {
+
+  selectedHotelName = hotel;
+  selectedHotelPrice = price;
+
+  const modal = document.getElementById("bookingModal");
+
+  modal.classList.add("show");
+
+  document.getElementById("bookingForm").style.display = "block";
+  document.getElementById("successMessage").classList.remove("show");
+
+  document.getElementById("selectedHotel").textContent =
+    "Reserve your room at " + hotel;
+
+  document.getElementById("summaryHotel").textContent = hotel;
+
+  document.getElementById("summaryPrice").textContent =
+    "₹" + price.toLocaleString("en-IN");
+
+  // Copy dates from main search
+  const checkin = document.getElementById("checkin").value;
+  const checkout = document.getElementById("checkout").value;
+  const guests = document.getElementById("guests").value;
+
+  document.getElementById("modalCheckin").value = checkin;
+  document.getElementById("modalCheckout").value = checkout;
+
+  document.getElementById("modalGuests").value =
+    guests == 1 ? "1 Guest" :
+    guests == 2 ? "2 Guests" :
+    guests == 3 ? "3 Guests" :
+    guests == 4 ? "4 Guests" :
+    "5 Guests";
+
+  updateSummary();
+}
+
+
+// -------------------------------
+// CLOSE BOOKING MODAL
+// -------------------------------
+
+function closeBooking() {
+
+  document
+    .getElementById("bookingModal")
+    .classList.remove("show");
+}
+
+
+// -------------------------------
+// UPDATE BOOKING PRICE
+// -------------------------------
+
+function updateSummary() {
+
+  const checkin =
+    document.getElementById("modalCheckin").value;
+
+  const checkout =
+    document.getElementById("modalCheckout").value;
+
+  const rooms =
+    Number(document.getElementById("modalRooms").value);
+
+  let nights = 1;
+
+  if (checkin && checkout) {
+
+    const start = new Date(checkin);
+    const end = new Date(checkout);
+
+    const difference =
+      (end - start) / (1000 * 60 * 60 * 24);
+
+    if (difference > 0) {
+      nights = difference;
+    }
+  }
+
+  const total =
+    selectedHotelPrice * nights * rooms;
+
+  document.getElementById("summaryNights").textContent =
+    nights;
+
+  document.getElementById("summaryRooms").textContent =
+    rooms;
+
+  document.getElementById("summaryTotal").textContent =
+    "₹" + total.toLocaleString("en-IN");
+}
+
+
+// -------------------------------
+// DATE CHANGE EVENTS
+// -------------------------------
+
+document
+  .getElementById("modalCheckin")
+  .addEventListener("change", function () {
+
+    document.getElementById("modalCheckout").min =
+      this.value;
+
+    updateSummary();
+  });
+
+
+document
+  .getElementById("modalCheckout")
+  .addEventListener("change", function () {
+
+    updateSummary();
+  });
+
+
+document
+  .getElementById("modalRooms")
+  .addEventListener("change", function () {
+
+    updateSummary();
+  });
+
+
+// -------------------------------
+// CONFIRM BOOKING
+// -------------------------------
+
+function confirmBooking() {
+
+  const name =
+    document.getElementById("fullName").value.trim();
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  const phone =
+    document.getElementById("phone").value.trim();
+
+  const checkin =
+    document.getElementById("modalCheckin").value;
+
+  const checkout =
+    document.getElementById("modalCheckout").value;
+
+
+  // Check empty fields
+
+  if (
+    !name ||
+    !email ||
+    !phone ||
+    !checkin ||
+    !checkout
+  ) {
+
+    alert("Please fill in all booking details.");
+
+    return;
+  }
+
+
+  // Validate dates
+
+  if (
+    new Date(checkout) <=
+    new Date(checkin)
+  ) {
+
+    alert(
+      "Check-out date must be after check-in date."
+    );
+
+    return;
+  }
+
+
+  // Create random booking ID
+
+  const bookingId =
+    "SE" +
+    Math.floor(
+      100000 +
+      Math.random() * 900000
+    );
+
+
+  document.getElementById("bookingId")
+    .textContent = bookingId;
+
+
+  document.getElementById("successDetails")
+    .innerHTML =
+      "Thank you, <strong>" +
+      name +
+      "</strong>! Your stay at <strong>" +
+      selectedHotelName +
+      "</strong> is confirmed.";
+
+
+  // Hide form
+
+  document.getElementById("bookingForm")
+    .style.display = "none";
+
+
+  // Show success message
+
+  document.getElementById("successMessage")
+    .classList.add("show");
+}
+
+
+// -------------------------------
+// HOTEL SEARCH
+// -------------------------------
+
+function searchHotels() {
+
+  const destination =
+    document
+      .getElementById("destination")
+      .value
+      .toLowerCase()
+      .trim();
+
+
+  const cards =
+    document.querySelectorAll(".hotel-card");
+
+
+  let found = 0;
+
+
+  cards.forEach(card => {
+
+    const location =
+      card.dataset.location
+        .toLowerCase();
+
+
+    if (
+      !destination ||
+      location.includes(destination)
+    ) {
+
+      card.style.display = "";
+
+      found++;
+
+    } else {
+
+      card.style.display = "none";
+    }
+
+  });
+
+
+  document.getElementById("emptyMessage")
+    .style.display =
+      found === 0 ? "block" : "none";
+
+
+  // Scroll to hotels
+
+  document
+    .getElementById("hotels")
+    .scrollIntoView({
+      behavior: "smooth"
+    });
+}
+
+
+// -------------------------------
+// HOTEL FILTER
+// -------------------------------
+
+function filterHotels(type, button) {
+
+  // Remove active class
+
+  document
+    .querySelectorAll(".filter-btn")
+    .forEach(btn => {
+
+      btn.classList.remove("active");
+
+    });
+
+
+  // Add active class
+
+  button.classList.add("active");
+
+
+  const cards =
+    document.querySelectorAll(".hotel-card");
+
+
+  let found = 0;
+
+
+  cards.forEach(card => {
+
+    const types =
+      card.dataset.type;
+
+
+    if (
+      type === "all" ||
+      types.includes(type)
+    ) {
+
+      card.style.display = "";
+
+      found++;
+
+    } else {
+
+      card.style.display = "none";
+    }
+
+  });
+
+
+  document.getElementById("emptyMessage")
+    .style.display =
+      found === 0 ? "block" : "none";
+}
+
+
+// -------------------------------
+// SORT HOTELS
+// -------------------------------
+
+function sortHotels() {
+
+  const value =
+    document.getElementById("sortSelect").value;
+
+
+  const grid =
+    document.getElementById("hotelGrid");
+
+
+  const cards =
+    Array.from(
+      grid.querySelectorAll(".hotel-card")
+    );
+
+
+  if (value === "low") {
+
+    cards.sort((a, b) =>
+
+      Number(a.dataset.price) -
+      Number(b.dataset.price)
+
+    );
+
+  }
+
+
+  if (value === "high") {
+
+    cards.sort((a, b) =>
+
+      Number(b.dataset.price) -
+      Number(a.dataset.price)
+
+    );
+
+  }
+
+
+  if (value === "rating") {
+
+    cards.sort((a, b) =>
+
+      Number(b.dataset.rating) -
+      Number(a.dataset.rating)
+
+    );
+
+  }
+
+
+  cards.forEach(card => {
+
+    grid.appendChild(card);
+
+  });
+}
+
+
+// -------------------------------
+// FAVORITE / HEART BUTTON
+// -------------------------------
+
+function toggleHeart(button) {
+
+  if (button.textContent === "♡") {
+
+    button.textContent = "♥";
+
+    button.style.color = "#ef4444";
+
+  } else {
+
+    button.textContent = "♡";
+
+    button.style.color = "";
+
+  }
+}
+
+
+// -------------------------------
+// LOGIN BUTTON
+// -------------------------------
+
+function login() {
+
+  alert(
+    "Login feature is for demonstration only."
+  );
+}
+
+
+// -------------------------------
+// MY BOOKINGS
+// -------------------------------
+
+function showBookings() {
+
+  alert(
+    "You don't have any bookings yet."
+  );
+}
+
+
+// -------------------------------
+// CLOSE MODAL WHEN CLICKING OUTSIDE
+// -------------------------------
+
+document
+  .getElementById("bookingModal")
+  .addEventListener("click", function(event) {
+
+    if (event.target === this) {
+
+      closeBooking();
+
+    }
+
+  });
+
+
+// -------------------------------
+// ENTER KEY SEARCH
+// -------------------------------
+
+document
+  .getElementById("destination")
+  .addEventListener("keypress", function(event) {
+
+    if (event.key === "Enter") {
+
+      searchHotels();
+
+    }
+
+  });
