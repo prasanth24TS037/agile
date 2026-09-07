@@ -1,1465 +1,1720 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StayEase - Hotel Booking</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <title>StayEase - Hotel Booking</title>
 
-    :root {
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --dark: #172033;
-      --gray: #64748b;
-      --light: #f5f7fb;
-      --white: #ffffff;
-      --border: #e2e8f0;
-      --green: #16a34a;
-      --orange: #f59e0b;
-    }
-
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--light);
-      color: var(--dark);
-      line-height: 1.5;
-    }
-
-    button,
-    input,
-    select {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    /* NAVBAR */
-    nav {
-      height: 72px;
-      background: white;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 7%;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .logo {
-      font-size: 25px;
-      font-weight: 800;
-      color: var(--primary);
-    }
-
-    .logo span {
-      color: var(--dark);
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      color: #475569;
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    .nav-links a:hover {
-      color: var(--primary);
-    }
-
-    .login-btn {
-      background: var(--primary);
-      color: white !important;
-      padding: 10px 18px;
-      border-radius: 8px;
-    }
-
-    /* HERO */
-    .hero {
-      min-height: 470px;
-      background:
-        linear-gradient(rgba(15, 23, 42, 0.60), rgba(15, 23, 42, 0.60)),
-        url("https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1800&q=80")
-        center/cover;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 60px 20px;
-    }
-
-    .hero-content {
-      width: 100%;
-      max-width: 1050px;
-      color: white;
-    }
-
-    .hero h1 {
-      font-size: clamp(38px, 6vw, 65px);
-      margin-bottom: 12px;
-      letter-spacing: -2px;
-    }
-
-    .hero p {
-      font-size: 19px;
-      margin-bottom: 35px;
-      color: #e2e8f0;
-    }
-
-    /* SEARCH BOX */
-    .search-box {
-      background: white;
-      border-radius: 14px;
-      padding: 12px;
-      display: grid;
-      grid-template-columns: 1.3fr 1fr 1fr .8fr auto;
-      gap: 8px;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
-      text-align: left;
-    }
-
-    .search-field {
-      padding: 7px 12px;
-      border-right: 1px solid var(--border);
-    }
-
-    .search-field label {
-      display: block;
-      font-size: 12px;
-      color: var(--gray);
-      margin-bottom: 4px;
-      font-weight: bold;
-    }
-
-    .search-field input,
-    .search-field select {
-      width: 100%;
-      border: none;
-      outline: none;
-      color: var(--dark);
-      background: transparent;
-      font-size: 14px;
-    }
-
-    .search-btn {
-      border: none;
-      background: var(--primary);
-      color: white;
-      border-radius: 9px;
-      padding: 0 24px;
-      font-weight: bold;
-      transition: .2s;
-    }
-
-    .search-btn:hover {
-      background: var(--primary-dark);
-      transform: translateY(-1px);
-    }
-
-    /* MAIN */
-    main {
-      max-width: 1200px;
-      margin: auto;
-      padding: 65px 20px;
-    }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 25px;
-    }
-
-    .section-header h2 {
-      font-size: 28px;
-    }
-
-    .section-header p {
-      color: var(--gray);
-      margin-top: 5px;
-    }
-
-    .sort-select {
-      border: 1px solid var(--border);
-      background: white;
-      padding: 10px 14px;
-      border-radius: 8px;
-      outline: none;
-    }
-
-    /* FILTERS */
-    .filters {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      background: white;
-      border: 1px solid var(--border);
-      color: #475569;
-      padding: 9px 16px;
-      border-radius: 30px;
-      transition: .2s;
-    }
-
-    .filter-btn:hover,
-    .filter-btn.active {
-      background: #eff6ff;
-      color: var(--primary);
-      border-color: #93c5fd;
-    }
-
-    /* HOTEL GRID */
-    .hotel-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-
-    .hotel-card {
-      background: white;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      transition: .25s;
-    }
-
-    .hotel-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(15, 23, 42, .10);
-    }
-
-    .hotel-image {
-      height: 215px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hotel-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: .4s;
-    }
-
-    .hotel-card:hover .hotel-image img {
-      transform: scale(1.05);
-    }
-
-    .badge {
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      background: white;
-      color: var(--primary);
-      font-size: 12px;
-      font-weight: bold;
-      padding: 6px 10px;
-      border-radius: 5px;
-    }
-
-    .heart {
-      position: absolute;
-      right: 14px;
-      top: 14px;
-      width: 38px;
-      height: 38px;
-      border: none;
-      background: white;
-      border-radius: 50%;
-      font-size: 19px;
-    }
-
-    .hotel-info {
-      padding: 18px;
-    }
-
-    .hotel-info h3 {
-      font-size: 19px;
-      margin-bottom: 5px;
-    }
-
-    .location {
-      color: var(--gray);
-      font-size: 14px;
-      margin-bottom: 13px;
-    }
-
-    .rating {
-      display: inline-block;
-      background: #ecfdf5;
-      color: var(--green);
-      font-weight: bold;
-      padding: 4px 8px;
-      border-radius: 5px;
-      font-size: 13px;
-    }
-
-    .reviews {
-      color: var(--gray);
-      font-size: 13px;
-      margin-left: 6px;
-    }
-
-    .amenities {
-      display: flex;
-      gap: 7px;
-      flex-wrap: wrap;
-      margin: 15px 0;
-    }
-
-    .amenity {
-      background: #f8fafc;
-      color: #64748b;
-      padding: 5px 8px;
-      border-radius: 5px;
-      font-size: 12px;
-    }
-
-    .hotel-bottom {
-      border-top: 1px solid var(--border);
-      padding-top: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .price strong {
-      font-size: 21px;
-    }
-
-    .price span {
-      font-size: 12px;
-      color: var(--gray);
-    }
-
-    .book-btn {
-      background: var(--primary);
-      border: none;
-      color: white;
-      padding: 10px 16px;
-      border-radius: 7px;
-      font-weight: bold;
-    }
-
-    .book-btn:hover {
-      background: var(--primary-dark);
-    }
-
-    /* FEATURES */
-    .features {
-      margin-top: 75px;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-    }
-
-    .feature {
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      text-align: center;
-      border: 1px solid var(--border);
-    }
-
-    .feature-icon {
-      font-size: 30px;
-      margin-bottom: 10px;
-    }
-
-    .feature h3 {
-      font-size: 16px;
-      margin-bottom: 5px;
-    }
-
-    .feature p {
-      color: var(--gray);
-      font-size: 13px;
-    }
-
-    /* MODAL */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, .65);
-      z-index: 200;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .modal-overlay.show {
-      display: flex;
-    }
-
-    .modal {
-      background: white;
-      width: 100%;
-      max-width: 550px;
-      border-radius: 15px;
-      padding: 30px;
-      position: relative;
-      max-height: 90vh;
-      overflow-y: auto;
-      animation: modalIn .2s ease;
-    }
-
-    @keyframes modalIn {
-      from {
-        opacity: 0;
-        transform: scale(.95);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    .close-modal {
-      position: absolute;
-      right: 18px;
-      top: 15px;
-      background: #f1f5f9;
-      border: none;
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      font-size: 20px;
-    }
-
-    .modal h2 {
-      margin-bottom: 5px;
-    }
-
-    .modal-subtitle {
-      color: var(--gray);
-      margin-bottom: 25px;
-      font-size: 14px;
-    }
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 13px;
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-
-    .form-group input,
-    .form-group select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      outline: none;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus {
-      border-color: var(--primary);
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-    }
-
-    .booking-summary {
-      background: #f8fafc;
-      padding: 15px;
-      border-radius: 9px;
-      margin: 20px 0;
-    }
-
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      margin: 7px 0;
-      font-size: 14px;
-    }
-
-    .summary-total {
-      border-top: 1px solid var(--border);
-      padding-top: 10px;
-      margin-top: 10px;
-      font-weight: bold;
-      font-size: 17px;
-    }
-
-    .confirm-btn {
-      width: 100%;
-      border: none;
-      background: var(--primary);
-      color: white;
-      padding: 13px;
-      border-radius: 8px;
-      font-weight: bold;
-    }
-
-    .confirm-btn:hover {
-      background: var(--primary-dark);
-    }
-
-    /* SUCCESS */
-    .success {
-      display: none;
-      text-align: center;
-      padding: 25px 10px;
-    }
-
-    .success.show {
-      display: block;
-    }
-
-    .success-icon {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background: #dcfce7;
-      color: var(--green);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 20px;
-      font-size: 35px;
-    }
-
-    .booking-id {
-      background: #eff6ff;
-      color: var(--primary);
-      padding: 12px;
-      border-radius: 7px;
-      margin: 20px 0;
-      font-weight: bold;
-    }
-
-    /* FOOTER */
-    footer {
-      background: #111827;
-      color: white;
-      padding: 45px 7%;
-      margin-top: 20px;
-    }
-
-    .footer-content {
-      max-width: 1200px;
-      margin: auto;
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 40px;
-    }
-
-    footer h3 {
-      margin-bottom: 13px;
-    }
-
-    footer p,
-    footer a {
-      color: #94a3b8;
-      font-size: 14px;
-      text-decoration: none;
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    .copyright {
-      max-width: 1200px;
-      margin: 35px auto 0;
-      padding-top: 20px;
-      border-top: 1px solid #334155;
-      color: #64748b;
-      font-size: 13px;
-    }
-
-    /* EMPTY */
-    .empty {
-      display: none;
-      text-align: center;
-      padding: 50px;
-      background: white;
-      border-radius: 12px;
-      color: var(--gray);
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 950px) {
-      .search-box {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .search-field {
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-        padding: 10px;
-      }
-
-      .search-btn {
-        height: 45px;
-      }
-
-      .hotel-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .features {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .footer-content {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    @media (max-width: 650px) {
-      nav {
-        padding: 0 20px;
-      }
-
-      .nav-links a:not(.login-btn) {
-        display: none;
-      }
-
-      .hero {
-        min-height: 560px;
-      }
-
-      .search-box {
-        grid-template-columns: 1fr;
-      }
-
-      .search-field {
-        border-bottom: 1px solid var(--border);
-      }
-
-      .hotel-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .features {
-        grid-template-columns: 1fr;
-      }
-
-      .footer-content {
-        grid-template-columns: 1fr;
-      }
-
-      .section-header {
-        align-items: flex-start;
-        gap: 15px;
-        flex-direction: column;
-      }
-
-      .form-row {
-        grid-template-columns: 1fr;
-        gap: 0;
-      }
-    }
-  </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <!-- NAVBAR -->
-  <nav>
-    <div class="logo">Stay<span>Ease</span></div>
+    <!-- ================= NAVBAR ================= -->
 
-    <div class="nav-links">
-      <a href="#home">Home</a>
-      <a href="#hotels">Hotels</a>
-      <a href="#features">Why Us</a>
-      <a href="#" onclick="showBookings()">My Bookings</a>
-      <a href="#" class="login-btn" onclick="login()">Login</a>
-    </div>
-  </nav>
+    <header class="navbar">
 
-  <!-- HERO -->
-  <section class="hero" id="home">
-    <div class="hero-content">
-      <h1>Find Your Perfect Stay</h1>
-      <p>Discover comfortable hotels at the best prices.</p>
-
-      <div class="search-box">
-
-        <div class="search-field">
-          <label>DESTINATION</label>
-          <input type="text" id="destination" placeholder="Where are you going?">
+        <div class="logo">
+            Stay<span>Ease</span>
         </div>
 
-        <div class="search-field">
-          <label>CHECK-IN</label>
-          <input type="date" id="checkin">
-        </div>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#hotels">Hotels</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+            <button onclick="login()">Login</button>
+        </nav>
 
-        <div class="search-field">
-          <label>CHECK-OUT</label>
-          <input type="date" id="checkout">
-        </div>
+    </header>
 
-        <div class="search-field">
-          <label>GUESTS</label>
-          <select id="guests">
-            <option value="1">1 Guest</option>
-            <option value="2" selected>2 Guests</option>
-            <option value="3">3 Guests</option>
-            <option value="4">4 Guests</option>
-            <option value="5">5+ Guests</option>
-          </select>
-        </div>
 
-        <button class="search-btn" onclick="searchHotels()">
-          Search
-        </button>
+    <!-- ================= HERO ================= -->
 
-      </div>
-    </div>
-  </section>
+    <section class="hero" id="home">
 
-  <!-- MAIN -->
-  <main id="hotels">
+        <div class="hero-content">
 
-    <div class="section-header">
-      <div>
-        <h2>Popular Hotels</h2>
-        <p>Handpicked stays for your next trip</p>
-      </div>
+            <h1>Find Your Perfect Stay</h1>
 
-      <select class="sort-select" id="sortSelect" onchange="sortHotels()">
-        <option value="default">Sort by</option>
-        <option value="low">Price: Low to High</option>
-        <option value="high">Price: High to Low</option>
-        <option value="rating">Highest Rated</option>
-      </select>
-    </div>
+            <p>
+                Discover comfortable hotels at the best prices.
+            </p>
 
-    <!-- FILTERS -->
-    <div class="filters">
-      <button class="filter-btn active" onclick="filterHotels('all', this)">
-        All
-      </button>
+            <div class="search-box">
 
-      <button class="filter-btn" onclick="filterHotels('luxury', this)">
-        Luxury
-      </button>
+                <div class="search-item">
 
-      <button class="filter-btn" onclick="filterHotels('business', this)">
-        Business
-      </button>
+                    <label>Destination</label>
 
-      <button class="filter-btn" onclick="filterHotels('budget', this)">
-        Budget
-      </button>
+                    <input
+                        type="text"
+                        id="destination"
+                        placeholder="Where are you going?"
+                    >
 
-      <button class="filter-btn" onclick="filterHotels('resort', this)">
-        Resorts
-      </button>
-    </div>
+                </div>
 
-    <!-- HOTEL GRID -->
-    <div class="hotel-grid" id="hotelGrid">
 
-      <!-- HOTEL 1 -->
-      <div class="hotel-card" data-type="luxury resort" data-price="8500" data-rating="4.9" data-location="Goa">
-        <div class="hotel-image">
-          <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=80" alt="Ocean Pearl Resort">
-          <span class="badge">Luxury</span>
-          <button class="heart" onclick="toggleHeart(this)">♡</button>
-        </div>
+                <div class="search-item">
 
-        <div class="hotel-info">
-          <h3>Ocean Pearl Resort</h3>
-          <div class="location">📍 Goa, India</div>
+                    <label>Check-in</label>
 
-          <span class="rating">★ 4.9</span>
-          <span class="reviews">128 reviews</span>
+                    <input
+                        type="date"
+                        id="checkin"
+                    >
 
-          <div class="amenities">
-            <span class="amenity">🏊 Pool</span>
-            <span class="amenity">🍽 Restaurant</span>
-            <span class="amenity">📶 Wi-Fi</span>
-          </div>
+                </div>
 
-          <div class="hotel-bottom">
-            <div class="price">
-              <strong>₹8,500</strong>
-              <span>/ night</span>
+
+                <div class="search-item">
+
+                    <label>Check-out</label>
+
+                    <input
+                        type="date"
+                        id="checkout"
+                    >
+
+                </div>
+
+
+                <div class="search-item">
+
+                    <label>Guests</label>
+
+                    <select id="guests">
+
+                        <option value="1">
+                            1 Guest
+                        </option>
+
+                        <option value="2" selected>
+                            2 Guests
+                        </option>
+
+                        <option value="3">
+                            3 Guests
+                        </option>
+
+                        <option value="4">
+                            4 Guests
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    class="search-btn"
+                    onclick="searchHotels()"
+                >
+                    Search
+                </button>
+
             </div>
 
-            <button class="book-btn"
-              onclick="openBooking('Ocean Pearl Resort', 8500)">
-              Book Now
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- HOTEL 2 -->
-      <div class="hotel-card" data-type="business luxury" data-price="6200" data-rating="4.7" data-location="Bangalore">
-        <div class="hotel-image">
-          <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=900&q=80" alt="Grand Palace Hotel">
-          <span class="badge">Popular</span>
-          <button class="heart" onclick="toggleHeart(this)">♡</button>
         </div>
 
-        <div class="hotel-info">
-          <h3>Grand Palace Hotel</h3>
-          <div class="location">📍 Bangalore, India</div>
+    </section>
 
-          <span class="rating">★ 4.7</span>
-          <span class="reviews">96 reviews</span>
 
-          <div class="amenities">
-            <span class="amenity">🍽 Restaurant</span>
-            <span class="amenity">💼 Business</span>
-            <span class="amenity">📶 Wi-Fi</span>
-          </div>
+    <!-- ================= HOTELS ================= -->
 
-          <div class="hotel-bottom">
-            <div class="price">
-              <strong>₹6,200</strong>
-              <span>/ night</span>
+    <main id="hotels">
+
+        <div class="section-heading">
+
+            <div>
+
+                <h2>Popular Hotels</h2>
+
+                <p>
+                    Handpicked stays for your next trip
+                </p>
+
             </div>
 
-            <button class="book-btn"
-              onclick="openBooking('Grand Palace Hotel', 6200)">
-              Book Now
-            </button>
-          </div>
-        </div>
-      </div>
 
-      <!-- HOTEL 3 -->
-      <div class="hotel-card" data-type="budget" data-price="2800" data-rating="4.5" data-location="Chennai">
-        <div class="hotel-image">
-          <img src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=900&q=80" alt="City Comfort Inn">
-          <span class="badge">Best Value</span>
-          <button class="heart" onclick="toggleHeart(this)">♡</button>
-        </div>
+            <select
+                id="sort"
+                onchange="sortHotels()"
+            >
 
-        <div class="hotel-info">
-          <h3>City Comfort Inn</h3>
-          <div class="location">📍 Chennai, India</div>
+                <option value="default">
+                    Sort By
+                </option>
 
-          <span class="rating">★ 4.5</span>
-          <span class="reviews">214 reviews</span>
+                <option value="low">
+                    Price: Low to High
+                </option>
 
-          <div class="amenities">
-            <span class="amenity">📶 Wi-Fi</span>
-            <span class="amenity">🚗 Parking</span>
-            <span class="amenity">🍳 Breakfast</span>
-          </div>
+                <option value="high">
+                    Price: High to Low
+                </option>
 
-          <div class="hotel-bottom">
-            <div class="price">
-              <strong>₹2,800</strong>
-              <span>/ night</span>
-            </div>
+                <option value="rating">
+                    Highest Rated
+                </option>
 
-            <button class="book-btn"
-              onclick="openBooking('City Comfort Inn', 2800)">
-              Book Now
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- HOTEL 4 -->
-      <div class="hotel-card" data-type="resort luxury" data-price="7200" data-rating="4.8" data-location="Kerala">
-        <div class="hotel-image">
-          <img src="https://images.unsplash.com/photo-1601918774946-25832a4be0d6?auto=format&fit=crop&w=900&q=80" alt="Green Valley Resort">
-          <span class="badge">Resort</span>
-          <button class="heart" onclick="toggleHeart(this)">♡</button>
-        </div>
-
-        <div class="hotel-info">
-          <h3>Green Valley Resort</h3>
-          <div class="location">📍 Kerala, India</div>
-
-          <span class="rating">★ 4.8</span>
-          <span class="reviews">175 reviews</span>
-
-          <div class="amenities">
-            <span class="amenity">🌴 Garden</span>
-            <span class="amenity">🏊 Pool</span>
-            <span class="amenity">📶 Wi-Fi</span>
-          </div>
-
-          <div class="hotel-bottom">
-            <div class="price">
-              <strong>₹7,200</strong>
-              <span>/ night</span>
-            </div>
-
-            <button class="book-btn"
-              onclick="openBooking('Green Valley Resort', 7200)">
-              Book Now
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- HOTEL 5 -->
-      <div class="hotel-card" data-type="business" data-price="4500" data-rating="4.6" data-location="Hyderabad">
-        <div class="hotel-image">
-          <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=900&q=80" alt="Urban Suites">
-          <span class="badge">Business</span>
-          <button class="heart" onclick="toggleHeart(this)">♡</button>
-        </div>
-
-        <div class="hotel-info">
-          <h3>Urban Suites</h3>
-          <div class="location">📍 Hyderabad, India</div>
-
-          <span class="rating">★ 4.6</span>
-          <span class="reviews">87 reviews</span>
-
-          <div class="amenities">
-            <span class="amenity">💼 Workspace</span>
-            <span class="amenity">📶 Wi-Fi</span>
-            <span class="amenity">🚗 Parking</span>
-          </div>
-
-          <div class="hotel-bottom">
-            <div class="price">
-              <strong>₹4,500</strong>
-              <span>/ night</span>
-            </div>
-
-            <button class="book-btn"
-              onclick="openBooking('Urban Suites', 4500)">
-              Book Now
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- HOTEL 6 -->
-      <div class="hotel-card" data-type="budget" data-price="2200" data-rating="4.3" data-location="Coimbatore">
-        <div class="hotel-image">
-          <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=900&q=80" alt="Sunrise Residency">
-          <span class="badge">Budget</span>
-          <button class="heart" onclick="toggleHeart(this)">♡</button>
-        </div>
-
-        <div class="hotel-info">
-          <h3>Sunrise Residency</h3>
-          <div class="location">📍 Coimbatore, India</div>
-
-          <span class="rating">★ 4.3</span>
-          <span class="reviews">143 reviews</span>
-
-          <div class="amenities">
-            <span class="amenity">📶 Wi-Fi</span>
-            <span class="amenity">🍳 Breakfast</span>
-            <span class="amenity">🚕 Taxi</span>
-          </div>
-
-          <div class="hotel-bottom">
-            <div class="price">
-              <strong>₹2,200</strong>
-              <span>/ night</span>
-            </div>
-
-            <button class="book-btn"
-              onclick="openBooking('Sunrise Residency', 2200)">
-              Book Now
-            </button>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="empty" id="emptyMessage">
-      <h3>No hotels found</h3>
-      <p>Try another destination or filter.</p>
-    </div>
-
-    <!-- FEATURES -->
-    <div class="features" id="features">
-
-      <div class="feature">
-        <div class="feature-icon">💰</div>
-        <h3>Best Prices</h3>
-        <p>Great hotels at competitive prices.</p>
-      </div>
-
-      <div class="feature">
-        <div class="feature-icon">🔒</div>
-        <h3>Secure Booking</h3>
-        <p>Your booking information stays safe.</p>
-      </div>
-
-      <div class="feature">
-        <div class="feature-icon">⭐</div>
-        <h3>Trusted Hotels</h3>
-        <p>Choose from highly-rated properties.</p>
-      </div>
-
-      <div class="feature">
-        <div class="feature-icon">📞</div>
-        <h3>24/7 Support</h3>
-        <p>We're here whenever you need us.</p>
-      </div>
-
-    </div>
-
-  </main>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-content">
-
-      <div>
-        <h3>StayEase</h3>
-        <p>Find your perfect stay anywhere in the world.</p>
-      </div>
-
-      <div>
-        <h3>Explore</h3>
-        <a href="#home">Home</a>
-        <a href="#hotels">Hotels</a>
-        <a href="#features">Why StayEase</a>
-      </div>
-
-      <div>
-        <h3>Support</h3>
-        <a href="#">Help Center</a>
-        <a href="#">Contact Us</a>
-        <a href="#">Cancellation</a>
-      </div>
-
-      <div>
-        <h3>Company</h3>
-        <a href="#">About Us</a>
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
-      </div>
-
-    </div>
-
-    <div class="copyright">
-      © 2026 StayEase. All rights reserved.
-    </div>
-  </footer>
-
-  <!-- BOOKING MODAL -->
-  <div class="modal-overlay" id="bookingModal">
-
-    <div class="modal">
-
-      <button class="close-modal" onclick="closeBooking()">×</button>
-
-      <div id="bookingForm">
-
-        <h2>Complete Your Booking</h2>
-        <p class="modal-subtitle" id="selectedHotel">
-          Hotel booking details
-        </p>
-
-        <div class="form-row">
-
-          <div class="form-group">
-            <label>CHECK-IN</label>
-            <input type="date" id="modalCheckin">
-          </div>
-
-          <div class="form-group">
-            <label>CHECK-OUT</label>
-            <input type="date" id="modalCheckout">
-          </div>
-
-        </div>
-
-        <div class="form-row">
-
-          <div class="form-group">
-            <label>GUESTS</label>
-            <select id="modalGuests">
-              <option>1 Guest</option>
-              <option selected>2 Guests</option>
-              <option>3 Guests</option>
-              <option>4 Guests</option>
-              <option>5 Guests</option>
             </select>
-          </div>
-
-          <div class="form-group">
-            <label>ROOMS</label>
-            <select id="modalRooms">
-              <option value="1">1 Room</option>
-              <option value="2">2 Rooms</option>
-              <option value="3">3 Rooms</option>
-            </select>
-          </div>
 
         </div>
 
-        <div class="form-group">
-          <label>FULL NAME</label>
-          <input type="text" id="fullName" placeholder="Enter your name">
-        </div>
 
-        <div class="form-group">
-          <label>EMAIL</label>
-          <input type="email" id="email" placeholder="you@example.com">
-        </div>
+        <!-- FILTER BUTTONS -->
 
-        <div class="form-group">
-          <label>PHONE NUMBER</label>
-          <input type="tel" id="phone" placeholder="+91 98765 43210">
-        </div>
+        <div class="filters">
 
-        <div class="booking-summary">
+            <button
+                class="filter active"
+                onclick="filterHotels('all', this)"
+            >
+                All
+            </button>
 
-          <div class="summary-row">
-            <span>Hotel</span>
-            <strong id="summaryHotel">-</strong>
-          </div>
+            <button
+                class="filter"
+                onclick="filterHotels('luxury', this)"
+            >
+                Luxury
+            </button>
 
-          <div class="summary-row">
-            <span>Price / night</span>
-            <span id="summaryPrice">₹0</span>
-          </div>
+            <button
+                class="filter"
+                onclick="filterHotels('budget', this)"
+            >
+                Budget
+            </button>
 
-          <div class="summary-row">
-            <span>Number of nights</span>
-            <span id="summaryNights">1</span>
-          </div>
+            <button
+                class="filter"
+                onclick="filterHotels('resort', this)"
+            >
+                Resorts
+            </button>
 
-          <div class="summary-row">
-            <span>Rooms</span>
-            <span id="summaryRooms">1</span>
-          </div>
-
-          <div class="summary-row summary-total">
-            <span>Total</span>
-            <span id="summaryTotal">₹0</span>
-          </div>
+            <button
+                class="filter"
+                onclick="filterHotels('business', this)"
+            >
+                Business
+            </button>
 
         </div>
 
-        <button class="confirm-btn" onclick="confirmBooking()">
-          Confirm Booking
-        </button>
 
-      </div>
+        <!-- HOTEL CARDS -->
 
-      <!-- SUCCESS MESSAGE -->
-      <div class="success" id="successMessage">
+        <div class="hotel-grid" id="hotelGrid">
 
-        <div class="success-icon">✓</div>
 
-        <h2>Booking Confirmed!</h2>
+            <!-- HOTEL 1 -->
 
-        <p class="modal-subtitle">
-          Your hotel reservation has been successfully created.
-        </p>
+            <div
+                class="hotel-card"
+                data-type="luxury resort"
+                data-price="8500"
+                data-rating="4.9"
+                data-location="Goa"
+            >
 
-        <div class="booking-id">
-          Booking ID: <span id="bookingId"></span>
+                <div class="hotel-image">
+
+                    <img
+                        src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=80"
+                        alt="Ocean Pearl Resort"
+                    >
+
+                    <span class="badge">
+                        Luxury
+                    </span>
+
+                    <button
+                        class="heart"
+                        onclick="toggleHeart(this)"
+                    >
+                        ♡
+                    </button>
+
+                </div>
+
+
+                <div class="hotel-info">
+
+                    <h3>
+                        Ocean Pearl Resort
+                    </h3>
+
+                    <p class="location">
+                        📍 Goa, India
+                    </p>
+
+                    <div class="rating">
+                        ★ 4.9
+                    </div>
+
+                    <span class="reviews">
+                        128 reviews
+                    </span>
+
+
+                    <div class="amenities">
+
+                        <span>🏊 Pool</span>
+
+                        <span>🍽 Restaurant</span>
+
+                        <span>📶 Wi-Fi</span>
+
+                    </div>
+
+
+                    <div class="hotel-bottom">
+
+                        <div class="price">
+
+                            <strong>
+                                ₹8,500
+                            </strong>
+
+                            <small>
+                                / night
+                            </small>
+
+                        </div>
+
+
+                        <button
+                            class="book-btn"
+                            onclick="openBooking(
+                                'Ocean Pearl Resort',
+                                8500
+                            )"
+                        >
+                            Book Now
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- HOTEL 2 -->
+
+            <div
+                class="hotel-card"
+                data-type="luxury business"
+                data-price="6200"
+                data-rating="4.7"
+                data-location="Bangalore"
+            >
+
+                <div class="hotel-image">
+
+                    <img
+                        src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=900&q=80"
+                        alt="Grand Palace Hotel"
+                    >
+
+                    <span class="badge">
+                        Popular
+                    </span>
+
+                    <button
+                        class="heart"
+                        onclick="toggleHeart(this)"
+                    >
+                        ♡
+                    </button>
+
+                </div>
+
+
+                <div class="hotel-info">
+
+                    <h3>
+                        Grand Palace Hotel
+                    </h3>
+
+                    <p class="location">
+                        📍 Bangalore, India
+                    </p>
+
+                    <div class="rating">
+                        ★ 4.7
+                    </div>
+
+                    <span class="reviews">
+                        96 reviews
+                    </span>
+
+
+                    <div class="amenities">
+
+                        <span>🍽 Restaurant</span>
+
+                        <span>💼 Business</span>
+
+                        <span>📶 Wi-Fi</span>
+
+                    </div>
+
+
+                    <div class="hotel-bottom">
+
+                        <div class="price">
+
+                            <strong>
+                                ₹6,200
+                            </strong>
+
+                            <small>
+                                / night
+                            </small>
+
+                        </div>
+
+
+                        <button
+                            class="book-btn"
+                            onclick="openBooking(
+                                'Grand Palace Hotel',
+                                6200
+                            )"
+                        >
+                            Book Now
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- HOTEL 3 -->
+
+            <div
+                class="hotel-card"
+                data-type="budget"
+                data-price="2800"
+                data-rating="4.5"
+                data-location="Chennai"
+            >
+
+                <div class="hotel-image">
+
+                    <img
+                        src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=900&q=80"
+                        alt="City Comfort Inn"
+                    >
+
+                    <span class="badge">
+                        Best Value
+                    </span>
+
+                    <button
+                        class="heart"
+                        onclick="toggleHeart(this)"
+                    >
+                        ♡
+                    </button>
+
+                </div>
+
+
+                <div class="hotel-info">
+
+                    <h3>
+                        City Comfort Inn
+                    </h3>
+
+                    <p class="location">
+                        📍 Chennai, India
+                    </p>
+
+                    <div class="rating">
+                        ★ 4.5
+                    </div>
+
+                    <span class="reviews">
+                        214 reviews
+                    </span>
+
+
+                    <div class="amenities">
+
+                        <span>📶 Wi-Fi</span>
+
+                        <span>🚗 Parking</span>
+
+                        <span>🍳 Breakfast</span>
+
+                    </div>
+
+
+                    <div class="hotel-bottom">
+
+                        <div class="price">
+
+                            <strong>
+                                ₹2,800
+                            </strong>
+
+                            <small>
+                                / night
+                            </small>
+
+                        </div>
+
+
+                        <button
+                            class="book-btn"
+                            onclick="openBooking(
+                                'City Comfort Inn',
+                                2800
+                            )"
+                        >
+                            Book Now
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- HOTEL 4 -->
+
+            <div
+                class="hotel-card"
+                data-type="resort luxury"
+                data-price="7200"
+                data-rating="4.8"
+                data-location="Kerala"
+            >
+
+                <div class="hotel-image">
+
+                    <img
+                        src="https://images.unsplash.com/photo-1601918774946-25832a4be0d6?auto=format&fit=crop&w=900&q=80"
+                        alt="Green Valley Resort"
+                    >
+
+                    <span class="badge">
+                        Resort
+                    </span>
+
+                    <button
+                        class="heart"
+                        onclick="toggleHeart(this)"
+                    >
+                        ♡
+                    </button>
+
+                </div>
+
+
+                <div class="hotel-info">
+
+                    <h3>
+                        Green Valley Resort
+                    </h3>
+
+                    <p class="location">
+                        📍 Kerala, India
+                    </p>
+
+                    <div class="rating">
+                        ★ 4.8
+                    </div>
+
+                    <span class="reviews">
+                        175 reviews
+                    </span>
+
+
+                    <div class="amenities">
+
+                        <span>🌴 Garden</span>
+
+                        <span>🏊 Pool</span>
+
+                        <span>📶 Wi-Fi</span>
+
+                    </div>
+
+
+                    <div class="hotel-bottom">
+
+                        <div class="price">
+
+                            <strong>
+                                ₹7,200
+                            </strong>
+
+                            <small>
+                                / night
+                            </small>
+
+                        </div>
+
+
+                        <button
+                            class="book-btn"
+                            onclick="openBooking(
+                                'Green Valley Resort',
+                                7200
+                            )"
+                        >
+                            Book Now
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- HOTEL 5 -->
+
+            <div
+                class="hotel-card"
+                data-type="business"
+                data-price="4500"
+                data-rating="4.6"
+                data-location="Hyderabad"
+            >
+
+                <div class="hotel-image">
+
+                    <img
+                        src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=900&q=80"
+                        alt="Urban Suites"
+                    >
+
+                    <span class="badge">
+                        Business
+                    </span>
+
+                    <button
+                        class="heart"
+                        onclick="toggleHeart(this)"
+                    >
+                        ♡
+                    </button>
+
+                </div>
+
+
+                <div class="hotel-info">
+
+                    <h3>
+                        Urban Suites
+                    </h3>
+
+                    <p class="location">
+                        📍 Hyderabad, India
+                    </p>
+
+                    <div class="rating">
+                        ★ 4.6
+                    </div>
+
+                    <span class="reviews">
+                        87 reviews
+                    </span>
+
+
+                    <div class="amenities">
+
+                        <span>💼 Workspace</span>
+
+                        <span>📶 Wi-Fi</span>
+
+                        <span>🚗 Parking</span>
+
+                    </div>
+
+
+                    <div class="hotel-bottom">
+
+                        <div class="price">
+
+                            <strong>
+                                ₹4,500
+                            </strong>
+
+                            <small>
+                                / night
+                            </small>
+
+                        </div>
+
+
+                        <button
+                            class="book-btn"
+                            onclick="openBooking(
+                                'Urban Suites',
+                                4500
+                            )"
+                        >
+                            Book Now
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- HOTEL 6 -->
+
+            <div
+                class="hotel-card"
+                data-type="budget"
+                data-price="2200"
+                data-rating="4.3"
+                data-location="Coimbatore"
+            >
+
+                <div class="hotel-image">
+
+                    <img
+                        src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=900&q=80"
+                        alt="Sunrise Residency"
+                    >
+
+                    <span class="badge">
+                        Budget
+                    </span>
+
+                    <button
+                        class="heart"
+                        onclick="toggleHeart(this)"
+                    >
+                        ♡
+                    </button>
+
+                </div>
+
+
+                <div class="hotel-info">
+
+                    <h3>
+                        Sunrise Residency
+                    </h3>
+
+                    <p class="location">
+                        📍 Coimbatore, India
+                    </p>
+
+                    <div class="rating">
+                        ★ 4.3
+                    </div>
+
+                    <span class="reviews">
+                        143 reviews
+                    </span>
+
+
+                    <div class="amenities">
+
+                        <span>📶 Wi-Fi</span>
+
+                        <span>🍳 Breakfast</span>
+
+                        <span>🚕 Taxi</span>
+
+                    </div>
+
+
+                    <div class="hotel-bottom">
+
+                        <div class="price">
+
+                            <strong>
+                                ₹2,200
+                            </strong>
+
+                            <small>
+                                / night
+                            </small>
+
+                        </div>
+
+
+                        <button
+                            class="book-btn"
+                            onclick="openBooking(
+                                'Sunrise Residency',
+                                2200
+                            )"
+                        >
+                            Book Now
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <p id="successDetails"></p>
 
-        <br>
+        <div
+            class="no-results"
+            id="noResults"
+        >
+            <h3>
+                No hotels found
+            </h3>
 
-        <button class="confirm-btn" onclick="closeBooking()">
-          Done
-        </button>
+            <p>
+                Try another destination.
+            </p>
+        </div>
 
-      </div>
+
+        <!-- ================= FEATURES ================= -->
+
+        <section
+            class="features"
+            id="about"
+        >
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    💰
+                </div>
+
+                <h3>
+                    Best Prices
+                </h3>
+
+                <p>
+                    Great hotels at competitive prices.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    🔒
+                </div>
+
+                <h3>
+                    Secure Booking
+                </h3>
+
+                <p>
+                    Your booking information stays safe.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    ⭐
+                </div>
+
+                <h3>
+                    Trusted Hotels
+                </h3>
+
+                <p>
+                    Choose from highly rated properties.
+                </p>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    📞
+                </div>
+
+                <h3>
+                    24/7 Support
+                </h3>
+
+                <p>
+                    We're here whenever you need us.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer id="contact">
+
+        <div class="footer-grid">
+
+            <div>
+
+                <h3>
+                    StayEase
+                </h3>
+
+                <p>
+                    Find your perfect stay anywhere in the world.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <h3>
+                    Explore
+                </h3>
+
+                <a href="#home">
+                    Home
+                </a>
+
+                <a href="#hotels">
+                    Hotels
+                </a>
+
+                <a href="#about">
+                    About
+                </a>
+
+            </div>
+
+
+            <div>
+
+                <h3>
+                    Support
+                </h3>
+
+                <a href="#">
+                    Help Center
+                </a>
+
+                <a href="#">
+                    Contact Us
+                </a>
+
+                <a href="#">
+                    Cancellation
+                </a>
+
+            </div>
+
+
+            <div>
+
+                <h3>
+                    Follow Us
+                </h3>
+
+                <a href="#">
+                    Instagram
+                </a>
+
+                <a href="#">
+                    Facebook
+                </a>
+
+                <a href="#">
+                    Twitter
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="copyright">
+
+            © 2026 StayEase. All Rights Reserved.
+
+        </div>
+
+    </footer>
+
+
+    <!-- ================= BOOKING MODAL ================= -->
+
+    <div
+        class="modal-overlay"
+        id="bookingModal"
+    >
+
+        <div class="modal">
+
+            <button
+                class="close"
+                onclick="closeBooking()"
+            >
+                ×
+            </button>
+
+
+            <div id="bookingForm">
+
+                <h2>
+                    Complete Your Booking
+                </h2>
+
+                <p
+                    class="modal-subtitle"
+                    id="selectedHotel"
+                >
+                    Hotel
+                </p>
+
+
+                <div class="form-row">
+
+                    <div>
+
+                        <label>
+                            Check-in
+                        </label>
+
+                        <input
+                            type="date"
+                            id="modalCheckin"
+                        >
+
+                    </div>
+
+
+                    <div>
+
+                        <label>
+                            Check-out
+                        </label>
+
+                        <input
+                            type="date"
+                            id="modalCheckout"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div>
+
+                        <label>
+                            Guests
+                        </label>
+
+                        <select id="modalGuests">
+
+                            <option>
+                                1 Guest
+                            </option>
+
+                            <option selected>
+                                2 Guests
+                            </option>
+
+                            <option>
+                                3 Guests
+                            </option>
+
+                            <option>
+                                4 Guests
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div>
+
+                        <label>
+                            Rooms
+                        </label>
+
+                        <select id="modalRooms">
+
+                            <option value="1">
+                                1 Room
+                            </option>
+
+                            <option value="2">
+                                2 Rooms
+                            </option>
+
+                            <option value="3">
+                                3 Rooms
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="fullName"
+                        placeholder="Enter your name"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="you@example.com"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Phone
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        placeholder="+91 98765 43210"
+                    >
+
+                </div>
+
+
+                <div class="summary">
+
+                    <div>
+                        <span>
+                            Hotel
+                        </span>
+
+                        <strong id="summaryHotel">
+                            -
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>
+                            Price / Night
+                        </span>
+
+                        <span id="summaryPrice">
+                            ₹0
+                        </span>
+                    </div>
+
+
+                    <div>
+                        <span>
+                            Nights
+                        </span>
+
+                        <span id="summaryNights">
+                            1
+                        </span>
+                    </div>
+
+
+                    <div>
+                        <span>
+                            Rooms
+                        </span>
+
+                        <span id="summaryRooms">
+                            1
+                        </span>
+                    </div>
+
+
+                    <div class="total">
+
+                        <strong>
+                            Total
+                        </strong>
+
+                        <strong id="summaryTotal">
+                            ₹0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="confirm"
+                    onclick="confirmBooking()"
+                >
+                    Confirm Booking
+                </button>
+
+            </div>
+
+
+            <!-- SUCCESS -->
+
+            <div
+                class="success"
+                id="success"
+            >
+
+                <div class="success-icon">
+                    ✓
+                </div>
+
+                <h2>
+                    Booking Confirmed!
+                </h2>
+
+                <p>
+                    Your reservation has been successfully created.
+                </p>
+
+                <div class="booking-id">
+
+                    Booking ID:
+                    <strong id="bookingId"></strong>
+
+                </div>
+
+                <p id="successDetails"></p>
+
+                <button
+                    class="confirm"
+                    onclick="closeBooking()"
+                >
+                    Done
+                </button>
+
+            </div>
+
+        </div>
 
     </div>
-  </div>
 
-  <script>
 
-    let selectedHotelName = "";
-    let selectedHotelPrice = 0;
+    <!-- ================= JAVASCRIPT ================= -->
 
-    /* SET TODAY AS MIN DATE */
-    const today = new Date().toISOString().split("T")[0];
+    <script>
 
-    document.getElementById("checkin").min = today;
-    document.getElementById("checkout").min = today;
-    document.getElementById("modalCheckin").min = today;
-    document.getElementById("modalCheckout").min = today;
+        let selectedHotel = "";
+        let selectedPrice = 0;
 
-    /* OPEN BOOKING */
-    function openBooking(hotel, price) {
 
-      selectedHotelName = hotel;
-      selectedHotelPrice = price;
+        /* CURRENT DATE */
 
-      document.getElementById("bookingModal").classList.add("show");
+        const today =
+            new Date().toISOString().split("T")[0];
 
-      document.getElementById("bookingForm").style.display = "block";
-      document.getElementById("successMessage").classList.remove("show");
+        document.getElementById("checkin").min = today;
+        document.getElementById("checkout").min = today;
 
-      document.getElementById("selectedHotel").textContent =
-        "Reserve your room at " + hotel;
+        document.getElementById("modalCheckin").min = today;
+        document.getElementById("modalCheckout").min = today;
 
-      document.getElementById("summaryHotel").textContent = hotel;
-      document.getElementById("summaryPrice").textContent =
-        "₹" + price.toLocaleString("en-IN");
 
-      updateSummary();
-    }
+        /* BOOKING MODAL */
 
-    /* CLOSE BOOKING */
-    function closeBooking() {
-      document.getElementById("bookingModal").classList.remove("show");
-    }
+        function openBooking(hotel, price) {
 
-    /* CALCULATE BOOKING */
-    function updateSummary() {
+            selectedHotel = hotel;
+            selectedPrice = price;
 
-      const checkin = document.getElementById("modalCheckin").value;
-      const checkout = document.getElementById("modalCheckout").value;
-      const rooms = Number(document.getElementById("modalRooms").value);
+            document
+                .getElementById("bookingModal")
+                .classList.add("show");
 
-      let nights = 1;
+            document
+                .getElementById("bookingForm")
+                .style.display = "block";
 
-      if (checkin && checkout) {
+            document
+                .getElementById("success")
+                .classList.remove("show");
 
-        const start = new Date(checkin);
-        const end = new Date(checkout);
+            document
+                .getElementById("selectedHotel")
+                .textContent =
+                "Reserve your room at " + hotel;
 
-        const difference =
-          (end - start) / (1000 * 60 * 60 * 24);
+            document
+                .getElementById("summaryHotel")
+                .textContent = hotel;
 
-        if (difference > 0) {
-          nights = difference;
-        }
-      }
+            document
+                .getElementById("summaryPrice")
+                .textContent =
+                "₹" + price.toLocaleString("en-IN");
 
-      const total = selectedHotelPrice * nights * rooms;
-
-      document.getElementById("summaryNights").textContent = nights;
-      document.getElementById("summaryRooms").textContent = rooms;
-
-      document.getElementById("summaryTotal").textContent =
-        "₹" + total.toLocaleString("en-IN");
-    }
-
-    document.getElementById("modalCheckin")
-      .addEventListener("change", function () {
-
-        document.getElementById("modalCheckout").min = this.value;
-        updateSummary();
-
-      });
-
-    document.getElementById("modalCheckout")
-      .addEventListener("change", updateSummary);
-
-    document.getElementById("modalRooms")
-      .addEventListener("change", updateSummary);
-
-    /* CONFIRM BOOKING */
-    function confirmBooking() {
-
-      const name = document.getElementById("fullName").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-
-      const checkin =
-        document.getElementById("modalCheckin").value;
-
-      const checkout =
-        document.getElementById("modalCheckout").value;
-
-      if (!name || !email || !phone || !checkin || !checkout) {
-        alert("Please fill in all booking details.");
-        return;
-      }
-
-      if (new Date(checkout) <= new Date(checkin)) {
-        alert("Check-out date must be after check-in date.");
-        return;
-      }
-
-      const bookingId =
-        "SE" + Math.floor(100000 + Math.random() * 900000);
-
-      document.getElementById("bookingId").textContent = bookingId;
-
-      document.getElementById("successDetails").innerHTML =
-        "Thank you, <strong>" + name +
-        "</strong>! Your stay at <strong>" +
-        selectedHotelName +
-        "</strong> is confirmed.";
-
-      document.getElementById("bookingForm").style.display = "none";
-      document.getElementById("successMessage").classList.add("show");
-    }
-
-    /* SEARCH */
-    function searchHotels() {
-
-      const destination =
-        document.getElementById("destination")
-          .value
-          .toLowerCase()
-          .trim();
-
-      const cards =
-        document.querySelectorAll(".hotel-card");
-
-      let found = 0;
-
-      cards.forEach(card => {
-
-        const location =
-          card.dataset.location.toLowerCase();
-
-        if (!destination || location.includes(destination)) {
-          card.style.display = "";
-          found++;
-        } else {
-          card.style.display = "none";
-        }
-      });
-
-      document.getElementById("emptyMessage").style.display =
-        found === 0 ? "block" : "none";
-
-      document.getElementById("hotels").scrollIntoView({
-        behavior: "smooth"
-      });
-    }
-
-    /* FILTER */
-    function filterHotels(type, button) {
-
-      document
-        .querySelectorAll(".filter-btn")
-        .forEach(btn => btn.classList.remove("active"));
-
-      button.classList.add("active");
-
-      const cards =
-        document.querySelectorAll(".hotel-card");
-
-      let found = 0;
-
-      cards.forEach(card => {
-
-        const types = card.dataset.type;
-
-        if (type === "all" || types.includes(type)) {
-          card.style.display = "";
-          found++;
-        } else {
-          card.style.display = "none";
-        }
-      });
-
-      document.getElementById("emptyMessage").style.display =
-        found === 0 ? "block" : "none";
-    }
-
-    /* SORT */
-    function sortHotels() {
-
-      const value =
-        document.getElementById("sortSelect").value;
-
-      const grid =
-        document.getElementById("hotelGrid");
-
-      const cards =
-        Array.from(grid.querySelectorAll(".hotel-card"));
-
-      if (value === "low") {
-        cards.sort((a, b) =>
-          Number(a.dataset.price) -
-          Number(b.dataset.price)
-        );
-      }
-
-      if (value === "high") {
-        cards.sort((a, b) =>
-          Number(b.dataset.price) -
-          Number(a.dataset.price)
-        );
-      }
-
-      if (value === "rating") {
-        cards.sort((a, b) =>
-          Number(b.dataset.rating) -
-          Number(a.dataset.rating)
-        );
-      }
-
-      cards.forEach(card => grid.appendChild(card));
-    }
-
-    /* HEART BUTTON */
-    function toggleHeart(button) {
-
-      if (button.textContent === "♡") {
-        button.textContent = "♥";
-        button.style.color = "#ef4444";
-      } else {
-        button.textContent = "♡";
-        button.style.color = "";
-      }
-    }
-
-    /* LOGIN */
-    function login() {
-      alert("Login feature is for demonstration only.");
-    }
-
-    /* MY BOOKINGS */
-    function showBookings() {
-      alert("You don't have any bookings yet.");
-    }
-
-    /* CLOSE MODAL WHEN CLICKING OUTSIDE */
-    document.getElementById("bookingModal")
-      .addEventListener("click", function(event) {
-
-        if (event.target === this) {
-          closeBooking();
+            updateSummary();
         }
 
-      });
 
-    /* ENTER KEY SEARCH */
-    document.getElementById("destination")
-      .addEventListener("keypress", function(event) {
+        /* CLOSE MODAL */
 
-        if (event.key === "Enter") {
-          searchHotels();
+        function closeBooking() {
+
+            document
+                .getElementById("bookingModal")
+                .classList.remove("show");
+
         }
 
-      });
 
-  </script>
+        /* UPDATE PRICE */
+
+        function updateSummary() {
+
+            const checkin =
+                document.getElementById("modalCheckin").value;
+
+            const checkout =
+                document.getElementById("modalCheckout").value;
+
+            const rooms =
+                Number(
+                    document.getElementById("modalRooms").value
+                );
+
+            let nights = 1;
+
+
+            if (checkin && checkout) {
+
+                const start =
+                    new Date(checkin);
+
+                const end =
+                    new Date(checkout);
+
+                const difference =
+                    (end - start) /
+                    (1000 * 60 * 60 * 24);
+
+                if (difference > 0) {
+                    nights = difference;
+                }
+
+            }
+
+
+            const total =
+                selectedPrice *
+                nights *
+                rooms;
+
+
+            document
+                .getElementById("summaryNights")
+                .textContent = nights;
+
+            document
+                .getElementById("summaryRooms")
+                .textContent = rooms;
+
+            document
+                .getElementById("summaryTotal")
+                .textContent =
+                "₹" + total.toLocaleString("en-IN");
+
+        }
+
+
+        document
+            .getElementById("modalCheckin")
+            .addEventListener("change", function () {
+
+                document
+                    .getElementById("modalCheckout")
+                    .min = this.value;
+
+                updateSummary();
+
+            });
+
+
+        document
+            .getElementById("modalCheckout")
+            .addEventListener(
+                "change",
+                updateSummary
+            );
+
+
+        document
+            .getElementById("modalRooms")
+            .addEventListener(
+                "change",
+                updateSummary
+            );
+
+
+        /* CONFIRM BOOKING */
+
+        function confirmBooking() {
+
+            const name =
+                document
+                    .getElementById("fullName")
+                    .value.trim();
+
+            const email =
+                document
+                    .getElementById("email")
+                    .value.trim();
+
+            const phone =
+                document
+                    .getElementById("phone")
+                    .value.trim();
+
+            const checkin =
+                document
+                    .getElementById("modalCheckin")
+                    .value;
+
+            const checkout =
+                document
+                    .getElementById("modalCheckout")
+                    .value;
+
+
+            if (
+                !name ||
+                !email ||
+                !phone ||
+                !checkin ||
+                !checkout
+            ) {
+
+                alert(
+                    "Please fill in all booking details."
+                );
+
+                return;
+            }
+
+
+            if (
+                new Date(checkout) <=
+                new Date(checkin)
+            ) {
+
+                alert(
+                    "Check-out must be after check-in."
+                );
+
+                return;
+            }
+
+
+            const bookingId =
+                "SE" +
+                Math.floor(
+                    100000 +
+                    Math.random() * 900000
+                );
+
+
+            document
+                .getElementById("bookingId")
+                .textContent = bookingId;
+
+
+            document
+                .getElementById("successDetails")
+                .innerHTML =
+                "Thank you, <strong>" +
+                name +
+                "</strong>! Your stay at <strong>" +
+                selectedHotel +
+                "</strong> is confirmed.";
+
+
+            document
+                .getElementById("bookingForm")
+                .style.display = "none";
+
+
+            document
+                .getElementById("success")
+                .classList.add("show");
+
+        }
+
+
+        /* SEARCH */
+
+        function searchHotels() {
+
+            const destination =
+                document
+                    .getElementById("destination")
+                    .value
+                    .toLowerCase()
+                    .trim();
+
+
+            const cards =
+                document.querySelectorAll(
+                    ".hotel-card"
+                );
+
+
+            let found = 0;
+
+
+            cards.forEach(card => {
+
+                const location =
+                    card.dataset.location
+                        .toLowerCase();
+
+
+                if (
+                    !destination ||
+                    location.includes(destination)
+                ) {
+
+                    card.style.display = "";
+
+                    found++;
+
+                } else {
+
+                    card.style.display = "none";
+
+                }
+
+            });
+
+
+            document
+                .getElementById("noResults")
+                .style.display =
+                found === 0
+                    ? "block"
+                    : "none";
+
+
+            document
+                .getElementById("hotels")
+                .scrollIntoView({
+                    behavior: "smooth"
+                });
+
+        }
+
+
+        /* FILTER */
+
+        function filterHotels(type, button) {
+
+            document
+                .querySelectorAll(".filter")
+                .forEach(btn =>
+                    btn.classList.remove("active")
+                );
+
+
+            button.classList.add("active");
+
+
+            const cards =
+                document.querySelectorAll(
+                    ".hotel-card"
+                );
+
+
+            let found = 0;
+
+
+            cards.forEach(card => {
+
+                const types =
+                    card.dataset.type;
+
+
+                if (
+                    type === "all" ||
+                    types.includes(type)
+                ) {
+
+                    card.style.display = "";
+
+                    found++;
+
+                } else {
+
+                    card.style.display = "none";
+
+                }
+
+            });
+
+
+            document
+                .getElementById("noResults")
+                .style.display =
+                found === 0
+                    ? "block"
+                    : "none";
+
+        }
+
+
+        /* SORT */
+
+        function sortHotels() {
+
+            const value =
+                document.getElementById("sort").value;
+
+
+            const grid =
+                document.getElementById("hotelGrid");
+
+
+            const cards =
+                Array.from(
+                    grid.querySelectorAll(
+                        ".hotel-card"
+                    )
+                );
+
+
+            if (value === "low") {
+
+                cards.sort(
+                    (a, b) =>
+                        Number(a.dataset.price) -
+                        Number(b.dataset.price)
+                );
+
+            }
+
+
+            if (value === "high") {
+
+                cards.sort(
+                    (a, b) =>
+                        Number(b.dataset.price) -
+                        Number(a.dataset.price)
+                );
+
+            }
+
+
+            if (value === "rating") {
+
+                cards.sort(
+                    (a, b) =>
+                        Number(b.dataset.rating) -
+                        Number(a.dataset.rating)
+                );
+
+            }
+
+
+            cards.forEach(card =>
+                grid.appendChild(card)
+            );
+
+        }
+
+
+        /* HEART */
+
+        function toggleHeart(button) {
+
+            if (button.textContent === "♡") {
+
+                button.textContent = "♥";
+
+                button.style.color = "#ef4444";
+
+            } else {
+
+                button.textContent = "♡";
+
+                button.style.color = "";
+
+            }
+
+        }
+
+
+        /* LOGIN */
+
+        function login() {
+
+            alert(
+                "Login feature is for demonstration only."
+            );
+
+        }
+
+
+        /* CLOSE WHEN CLICKING OUTSIDE */
+
+        document
+            .getElementById("bookingModal")
+            .addEventListener(
+                "click",
+                function(event) {
+
+                    if (event.target === this) {
+                        closeBooking();
+                    }
+
+                }
+            );
+
+    </script>
 
 </body>
 </html>
